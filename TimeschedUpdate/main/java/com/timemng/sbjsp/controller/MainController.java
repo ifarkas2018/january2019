@@ -7,6 +7,8 @@ import java.util.List;
 
 import com.timemng.sbjsp.dao.EmpSchedTaskDAO;
 import com.timemng.sbjsp.model.EmpSchedTaskInfo;
+import com.timemng.sbjsp.model.LoginInfo;
+import com.timemng.sbjsp.dao.LoginDAO;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -33,6 +35,101 @@ public class MainController {
         
     @Autowired
     private EmpSchedTaskDAO empSchedTaskDAO;
+    @Autowired
+    private LoginDAO empLoginDAO;
+    
+    // if the requested URL is localhost:8080/login_form, method is GET 
+    @RequestMapping(value = { "login_form" }, method = RequestMethod.GET)
+    public String login_form(Model model) {
+    	return "login_form"; // return the show_sched_form.jsp
+    }
+    
+ // if the requested URL is localhost:8080/login_result, method is POST
+   // @RequestMapping(value = { "login_result" }, method = RequestMethod.POST)
+   // public String login_result(Model model, @RequestParam(value="user_name", required=true ) String user_name, // 
+    //	@RequestParam(value="user_passw", required=true) String user_passw) {
+    //	try {
+    //		// add the rest of the query to the query
+    		// empSchedTaskDAO.addToQueryStr("abc", "def", "gthj", "wert" );
+    		// empSchedTaskDAO.addToQueryStr1( user_name, user_passw );
+	    		// list is a list of objects of type LoginInfo ( user name, password ) that match the entered values of user name and password
+		//    	List<LoginInfo> list = empLoginDAO.getLogin();
+		    	// in the database there is a user name with the password entered in the form
+		//    	if (list.isEmpty()) {
+		//    		model.addAttribute("logged_in", "true"); 
+		    		// return "logged_in";
+		//    		return "index"; // ????????????? show whole navabar
+		//    	}
+		//    	else {
+		//    		model.addAttribute("logged_in", "false");
+		//    		return "not_loggedin";
+		//    	}
+    		//} else {
+    			//return "not_entered";
+    		//}
+    	//} catch ( Exception e ) {
+    	//	e.printStackTrace();
+    	//	return "error_DB";
+    	//}
+    //}
+    
+ // if the requested URL is localhost:8080/show_sched_results, method is POST
+    @RequestMapping(value = "login_result", method = RequestMethod.POST)
+    // employee_id is an input element in show_sched_fcont.jsp. The user entered the id, name of the employee whose schedule he wants to see
+    // ( and the date of the schedule )
+	public String login_result(Model model, @RequestParam(value="user_name", required=true ) String user_name, // 
+		@RequestParam(value="user_passw", required=true) String user_passw) {
+    	try {
+	    	// add the rest of the query to the query - // method returns FALSE - if the user didn't enter user name or password ( in the form ) 
+			if (empLoginDAO.addToQueryStr( user_name, user_passw )) {
+				// list is a list of objects of type LoginInfo ( user name, password ) that match the entered values of user name and password
+				List<LoginInfo> list = empLoginDAO.getLogin();
+				// LoginInfo myObject = list.get(0);
+				int size1 = list.size();
+				model.addAttribute("size", size1);
+				// in the database there is a user name with the password entered in the form
+				if (!(list.isEmpty())) {
+				    model.addAttribute("logged_in", "true"); 
+				    //return "logged_in";
+				    return "index"; // ????????????? show whole navabar
+				} else {
+					// set the attribute logged_in to false - the user didn't log in
+					model.addAttribute("logged_in", "false");
+					model.addAttribute("message_shown", "The user with the user name " + user_name + " and the entered password doesn't exist!");
+					model.addAttribute("is_red", "true");
+					//return "not_loggedin";
+					return "result";
+			    }
+				    
+			} else {
+				model.addAttribute("message_shown", "You didn't enter the user name and the password!");
+				model.addAttribute("is_red", "true");
+				//return "not_entered";
+				return "result";
+			}
+    	} catch  ( Exception e ) {
+        	e.printStackTrace();
+        	model.addAttribute("message_shown", "A problem occured while accessing the database!");
+        	model.addAttribute("is_red", "true");
+        	//return "error_db";
+        	return "result";
+        }
+		// retrieve the schedule ( with tasks ) for the requested employee on the requested date
+		// List<EmpSchedTaskInfo> list = empSchedTaskDAO.getSchedules();
+		 
+		// add the schedule of the employee as the attribute to the model 
+		// model.addAttribute("empSchedTaskInfos", list);
+		// add the first name as the attribute to the model
+		// model.addAttribute("enter_f_name", enter_f_name ); 
+		// add the last name to the model
+		// model.addAttribute("enter_l_name", enter_l_name );
+		// add the date ( of the schedule ) to the model
+		// model.addAttribute("enter_date", enter_date ); 
+		 
+		//return "not_loggedin"; // show the show_sched_results.jsp
+	}
+ 
+    
     
     // if the requested URL is localhost:8080/show_sched_form, method is GET 
     @RequestMapping(value = { "show_sched_form" }, method = RequestMethod.GET)
@@ -94,8 +191,17 @@ public class MainController {
     	
     	// @@@@@@@@@ DO NOT DELETE
     	// add the variable update_succ as the attribute to the model
-    	model.addAttribute("update_succ", update_succ);
-    	return "task_upd_succ"; // show the task_upd_succ.jsp
+    	//model.addAttribute("update_succ", update_succ);
+    	if (update_succ) {
+    		model.addAttribute("message_shown", "The task was updated successfully !");
+    		model.addAttribute("is_red", "false");
+    	}
+    	else {
+    		model.addAttribute("message_shown", "The task wasn't updated successfully - an error occurred while updating the task !");
+    		model.addAttribute("is_red", "true");
+    	}
+    	// return "task_upd_succ"; // show the task_upd_succ.jsp
+    	return "result";
     }
     
     

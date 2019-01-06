@@ -1,7 +1,7 @@
 // project : Time Schedule, author : Ingrid Farkas, 2019 
 package com.timemng.sbjsp.model;
 
-// EmpSchedTaskInfo - model class ( the class representing the data of the record )
+// EmpSchedTaskInfo - model class ( the class representing the data of the record in the task table )
 public class EmpSchedTaskInfo {
 		
 	private Long taskId; // the id of the task
