@@ -54,5 +54,5 @@
 <!-- w3-hover-theme-l4 is used to set on the hover the background color of the button and the color of the text -->
 <!-- w3-mobile used to create a responsive navbar with responsive dropdown links -->
 <!-- w3-right used to right-align a specific link -->
-<a href="log_out" class="w3-bar-item w3-button w3-text-theme-m1 w3-hover-theme-l4 w3-mobile w3-right">Log Out</a>
+<a href="login_form" class="w3-bar-item w3-button w3-text-theme-m1 w3-hover-theme-l4 w3-mobile w3-right">Log In</a>
 </div> <!-- end of class="w3-bar w3-theme-m1 w3-round-xxlarge" -->

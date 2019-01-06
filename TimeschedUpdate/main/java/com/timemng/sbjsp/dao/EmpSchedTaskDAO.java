@@ -8,6 +8,7 @@ import javax.sql.DataSource;
  
 // import org.o7planning.sbjdbc.exception.BankTransactionException;
 import com.timemng.sbjsp.mapper.EmpSchedTaskMapper;
+import com.timemng.sbjsp.mapper.LoginMapper;
 import com.timemng.sbjsp.model.EmpSchedTaskInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -151,4 +152,37 @@ public class EmpSchedTaskDAO extends JdbcDaoSupport {
     	// PROBLEM : if id,name, date are all EMPTY - HANDLE THIS ????????????????????????????????????????????????????????
     	EmpSchedTaskMapper.updateSQL(sql);
     }
+    
+    
+    public void addToQueryStr1(String userName, String userPassw ) {
+
+    	boolean returnVal; // the value returned by the method
+     	// resetBASE_SQL sets the string SQL_LOGIN to its original value
+     	// if the user ran the logging in before then the original SQL_LOGIN got changed so I have to reset it to its original value 
+     	LoginMapper.resetSQL_LOGIN();
+     	String sql = LoginMapper.SQL_LOGIN;
+     	
+     	// if the user entered user name in the form I am changing the SQL query to return the records where the user name equals the entered value
+     	if (!(userName.equals(null))) 
+     		sql += "and ( user_name='" + userName + "') ";
+     	//else
+     		// returnVal = false;
+     	
+     	// if the user entered user name in the form I am changing the SQL query to return the records where the user name equals the entered value
+     	if (!(userPassw.equals(null))) {
+     		sql += "and ( userPassw ='" + userPassw + "') ";
+     		//returnVal = true;
+     	}
+     	else
+     		//returnVal = false;
+  
+     	sql += ";";
+     	
+     	// PROBLEM : if id,name, date are all EMPTY - HANDLE THIS ????????????????????????????????????????????????????????
+     	// update the SQL_LOGIN to the sql
+     	LoginMapper.updateSQL(sql);
+     	
+     	//return returnVal;
+     }
+ 
 }
